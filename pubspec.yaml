@@ -1,0 +1,29 @@
+name: trueque_libro
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_rating_bar: ^4.0.0
+  flutter_svg: ^2.0.16 # Actualizado a la última versión
+  image_picker: ^1.1.2 # Actualizado a la última versión
+  supabase_flutter: ^2.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0 # Actualizado a la última versión
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/  # Ruta a la imagen de marcador de posición
+    - assets/images/logo.png
