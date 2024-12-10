@@ -3,7 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:trueque_libro/constants/colors.dart';
 import '../services/profile_service.dart';
 import '../auth/auth_service.dart';
-import 'change_password_page.dart'; // Nueva pantalla de cambio de contraseña
+import 'change_password_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UserPersonalProfilePage extends StatefulWidget {
@@ -64,14 +64,12 @@ class _UserPersonalProfilePageState extends State<UserPersonalProfilePage> {
           throw Exception('Usuario no autenticado');
         }
 
-        // Subir y actualizar la foto
         final photoUrl =
             await ProfileService().uploadAndUpdatePhoto(userId, image.path);
 
         if (mounted) {
           setState(() {
-            userProfile?['photo_url'] =
-                photoUrl; // Actualiza la UI con la nueva URL
+            userProfile?['photo_url'] = photoUrl;
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -92,109 +90,85 @@ class _UserPersonalProfilePageState extends State<UserPersonalProfilePage> {
   Widget build(BuildContext context) {
     return isLoading
         ? const Center(child: CircularProgressIndicator())
-        : DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: AppBar(
-                title: const Text(
-                  'Perfil de Usuario',
-                  style: TextStyle(color: Colors.black),
-                ),
-                backgroundColor: Colors.white,
-                iconTheme: const IconThemeData(color: Colors.black),
-                bottom: const TabBar(
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: AppColors.primaryColor,
-                  tabs: [
-                    Tab(text: 'Info de Cuenta'),
-                    Tab(text: 'Términos y Condiciones'),
-                  ],
-                ),
+        : Scaffold(
+            backgroundColor: Colors.grey[100],
+            appBar: AppBar(
+              title: const Text(
+                'Perfil de Usuario',
+                style: TextStyle(color: Colors.white),
               ),
-              body: TabBarView(
+              backgroundColor: AppColors.primaryColor,
+              centerTitle: true,
+              iconTheme: const IconThemeData(color: Colors.white),
+            ),
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
                 children: [
-                  _buildAccountInfoTab(),
-                  _buildTermsTab(),
+                  _buildProfileHeader(),
+                  const SizedBox(height: 16),
+                  _buildAccountInfoCard(),
                 ],
               ),
             ),
           );
   }
 
-  Widget _buildAccountInfoTab() {
+  Widget _buildProfileHeader() {
     final photoUrl = userProfile?['photo_url'] ??
         'https://ruta_de_imagen_default.com/default.png';
-    final name = userProfile?['name'] ?? 'Nombre no disponible';
-    final phoneNumber = userProfile?['phone_number'] ?? 'Número no disponible';
-    final email = _authService.getCurrentUserEmail() ?? 'Correo no disponible';
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: GestureDetector(
-              onTap: _updatePhoto,
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(photoUrl),
-                  ),
-                  const Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      radius: 15,
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.edit, size: 18, color: Colors.grey),
-                    ),
-                  ),
-                ],
+    return Center(
+      child: GestureDetector(
+        onTap: _updatePhoto,
+        child: Stack(
+          children: [
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: NetworkImage(photoUrl),
+            ),
+            const Positioned(
+              bottom: 0,
+              right: 0,
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.white,
+                child: Icon(Icons.edit, size: 20, color: Colors.grey),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          const Text(
-            'Información Básica',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildUserInfoTile("Nombre", name),
-          const Divider(),
-          _buildUserInfoTile("Número de Teléfono", phoneNumber),
-          const Divider(),
-          _buildUserInfoTile("Correo Electrónico", email, isVerified: true),
-          const Divider(),
-          _buildPasswordTile(), // Nuevo campo para cambiar contraseña
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildTermsTab() {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Términos y Condiciones',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          Text(
-            '* La aplicación está diseñada para el intercambio de libros.',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 16),
-          Text(
-            '* No se permite el intercambio de libros en mal estado.',
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
+  Widget _buildAccountInfoCard() {
+    final name = userProfile?['name'] ?? 'Nombre no disponible';
+    final phoneNumber = userProfile?['phone_number'] ?? 'Número no disponible';
+    final email = _authService.getCurrentUserEmail() ?? 'Correo no disponible';
+
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Información Básica',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            _buildUserInfoTile("Nombre", name),
+            const Divider(),
+            _buildUserInfoTile("Número de Teléfono", phoneNumber),
+            const Divider(),
+            _buildUserInfoTile("Correo Electrónico", email, isVerified: true),
+            const Divider(),
+            _buildPasswordTile(),
+          ],
+        ),
       ),
     );
   }
@@ -217,6 +191,12 @@ class _UserPersonalProfilePageState extends State<UserPersonalProfilePage> {
       title: const Text("Contraseña",
           style: TextStyle(fontWeight: FontWeight.bold)),
       trailing: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
         onPressed: () {
           Navigator.push(
             context,
@@ -225,7 +205,12 @@ class _UserPersonalProfilePageState extends State<UserPersonalProfilePage> {
             ),
           );
         },
-        child: const Text("Cambiar"),
+        child: const Text(
+          "Cambiar",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

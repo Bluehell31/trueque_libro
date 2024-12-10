@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/profile_service.dart';
+import '../constants/colors.dart'; // Asegúrate de importar AppColors
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
@@ -11,15 +12,17 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final TextEditingController _currentPasswordController =
-      TextEditingController(); // Controlador para la contraseña actual
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   bool _isLoading = false;
+  bool _isCurrentPasswordVisible = false;
+  bool _isNewPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   void dispose() {
-    // Liberar controladores para evitar fugas de memoria
     _currentPasswordController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -55,7 +58,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       final email = Supabase.instance.client.auth.currentUser?.email;
       if (email == null) throw Exception("Usuario no autenticado.");
 
-      // Usar el método del servicio
       await ProfileService().changePassword(
         currentPassword: currentPassword,
         newPassword: newPassword,
@@ -80,55 +82,69 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text("Cambiar Contraseña"),
-        backgroundColor: Colors.blueAccent,
+        title: const Text(
+          "Cambiar Contraseña",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor:
+            AppColors.primaryColor, // Cambiado a AppColors.primaryColor
+        centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Contraseña Actual",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _currentPasswordController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Introduce tu contraseña actual",
+            Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              "Nueva Contraseña",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Introduce tu nueva contraseña",
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    _buildPasswordField(
+                      controller: _currentPasswordController,
+                      label: "Contraseña Actual",
+                      hint: "Introduce tu contraseña actual",
+                      isPasswordVisible: _isCurrentPasswordVisible,
+                      togglePasswordVisibility: () {
+                        setState(() {
+                          _isCurrentPasswordVisible =
+                              !_isCurrentPasswordVisible;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPasswordField(
+                      controller: _passwordController,
+                      label: "Nueva Contraseña",
+                      hint: "Introduce tu nueva contraseña",
+                      isPasswordVisible: _isNewPasswordVisible,
+                      togglePasswordVisibility: () {
+                        setState(() {
+                          _isNewPasswordVisible = !_isNewPasswordVisible;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPasswordField(
+                      controller: _confirmPasswordController,
+                      label: "Confirmar Nueva Contraseña",
+                      hint: "Confirma tu nueva contraseña",
+                      isPasswordVisible: _isConfirmPasswordVisible,
+                      togglePasswordVisibility: () {
+                        setState(() {
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              "Confirmar Nueva Contraseña",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _confirmPasswordController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Confirma tu nueva contraseña",
-              ),
-              obscureText: true,
             ),
             const SizedBox(height: 24),
             SizedBox(
@@ -136,20 +152,66 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _changePassword,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: AppColors
+                      .primaryColor, // Cambiado a AppColors.primaryColor
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : const Text(
                         "Actualizar Contraseña",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required bool isPasswordVisible,
+    required VoidCallback togglePasswordVisibility,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            hintText: hint,
+            suffixIcon: IconButton(
+              icon: Icon(
+                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                color: Colors.grey,
+              ),
+              onPressed: togglePasswordVisibility,
+            ),
+          ),
+          obscureText: !isPasswordVisible,
+        ),
+      ],
     );
   }
 }

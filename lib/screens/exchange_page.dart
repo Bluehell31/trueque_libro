@@ -1,63 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:trueque_libro/screens/notificaciones.dart';
 import '../constants/colors.dart';
-import 'user_profile_page.dart';
-import 'home_page.dart';
-import 'user_personal_profile_page.dart';
-import 'login_page.dart';
-import 'package:trueque_libro/screens/confirmation_screen.dart';
+import 'confirmation_screen.dart';
 
-class ExchangePage extends StatefulWidget {
+class ExchangePage extends StatelessWidget {
   final String bookTitle;
-
-  const ExchangePage({super.key, required this.bookTitle});
-
-  @override
-  _ExchangePageState createState() => _ExchangePageState();
-}
-
-class _ExchangePageState extends State<ExchangePage> {
   final String userName = "Cristiano Ronaldo"; // Usuario de ejemplo
   final String userPhotoUrl = 'assets/images/Usuario2.png'; // Foto de ejemplo
   final String bookDescription =
       "Obra de referencia en anatomía humana, ideal para estudiantes de medicina y profesionales de la salud."; // Descripción de ejemplo
   final double ownerRating = 4.8; // Calificación de ejemplo
 
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const UserPersonalProfilePage()),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const NotificationsPage()),
-        );
-        break;
-      case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
-        );
-        break;
-    }
-  }
+  const ExchangePage({super.key, required this.bookTitle});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +18,7 @@ class _ExchangePageState extends State<ExchangePage> {
       appBar: AppBar(
         title: const Text(
           'Detalles del Intercambio',
-          style: TextStyle(color: AppColors.secondaryColor),
+          style: TextStyle(color: Colors.white),
         ),
         backgroundColor: AppColors.primaryColor,
         centerTitle: true,
@@ -100,7 +53,7 @@ class _ExchangePageState extends State<ExchangePage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.bookTitle,
+                    bookTitle,
                     style: const TextStyle(
                       fontSize: 16,
                       color: AppColors.textColor,
@@ -117,7 +70,7 @@ class _ExchangePageState extends State<ExchangePage> {
               ),
             ),
             const SizedBox(height: 16),
-            // Sección de información del propietario con imagen, nombre y calificación
+            // Sección de información del propietario
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -159,36 +112,11 @@ class _ExchangePageState extends State<ExchangePage> {
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const UserProfilePage(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 30,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Mostrar Perfil de Usuario',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-            // Condiciones del intercambio (modificado para reflejar intercambio permanente)
+            // Condiciones del intercambio
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -236,7 +164,7 @@ class _ExchangePageState extends State<ExchangePage> {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: AppColors.primaryColor,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 30,
                     vertical: 15,
@@ -245,7 +173,6 @@ class _ExchangePageState extends State<ExchangePage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                // Dentro de ExchangePage
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -267,30 +194,6 @@ class _ExchangePageState extends State<ExchangePage> {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: AppColors.primaryColor),
-            label: 'Inicio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: AppColors.primaryColor),
-            label: 'Perfil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications, color: AppColors.primaryColor),
-            label: 'Notificaciones',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.login, color: AppColors.primaryColor),
-            label: 'Login',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: AppColors.secondaryColor,
-        unselectedItemColor: AppColors.textColor,
-        onTap: _onItemTapped,
       ),
     );
   }
