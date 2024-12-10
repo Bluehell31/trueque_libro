@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Importar para usar FilteringTextInputFormatter
 import '../services/book_service.dart';
 
 class EditBookPage extends StatefulWidget {
@@ -147,6 +148,10 @@ class _EditBookPageState extends State<EditBookPage> {
                       decoration: const InputDecoration(
                           labelText: 'Año de Publicación'),
                       keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly, // Solo números
+                        LengthLimitingTextInputFormatter(4), // Máximo 4 dígitos
+                      ],
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||

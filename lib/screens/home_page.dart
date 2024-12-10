@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:trueque_libro/screens/PersonalBooksPage.dart';
-import 'package:trueque_libro/screens/add_book_page.dart';
-import 'package:trueque_libro/screens/book_details.dart';
+import 'book_details.dart';
+import 'add_book_page.dart';
+import 'PersonalBooksPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -78,12 +78,13 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text(
           'MedEx',
-          style:
-              TextStyle(fontWeight: FontWeight.w500, color: Colors.lightBlue),
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+              color: Colors.lightBlue),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
         elevation: 0,
         actions: [
           TextButton(
@@ -100,12 +101,13 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
-                color: Colors.black,
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
             ),
           ),
         ],
       ),
+      backgroundColor: Colors.white,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -139,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: Colors.black,
+                        color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
                   ),
@@ -157,8 +159,7 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         final book = filteredBooks[index];
                         final title = book['title'] ?? 'Título no disponible';
-                        final imageUrl = book['photo_url'] ??
-                            'https://via.placeholder.com/150'; // Placeholder si no hay imagen
+                        final imageUrl = book['photo_url'] ?? '';
 
                         return BookCard(
                           title: title,
@@ -168,12 +169,13 @@ class _HomePageState extends State<HomePage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BookDetailsPage(
+                                  bookId: book['id'],
                                   title: title,
-                                  description: book['description'] ?? '',
+                                  description: book['description'],
+                                  authors: book['author'],
+                                  year: book['year']
+                                      .toString(), // Convertir a String
                                   imageUrl: imageUrl,
-                                  authors:
-                                      book['author'] ?? 'Autor desconocido',
-                                  year: book['year']?.toString() ?? '',
                                 ),
                               ),
                             );
@@ -192,10 +194,9 @@ class _HomePageState extends State<HomePage> {
             MaterialPageRoute(builder: (context) => const AddBookPage()),
           );
         },
-        backgroundColor: Colors.blueAccent,
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.lightBlue,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
@@ -236,8 +237,11 @@ class BookCard extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               child: Text(
                 title,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

@@ -77,7 +77,6 @@ class _AddBookPageState extends State<AddBookPage> {
           imageFile: _coverImage!,
         );
 
-        // Mostrar mensaje de éxito
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('¡Libro añadido correctamente!')),
         );
@@ -91,7 +90,6 @@ class _AddBookPageState extends State<AddBookPage> {
           _coverImage = null;
         });
       } catch (e) {
-        // Mostrar mensaje de error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al añadir el libro: $e')),
         );
@@ -108,8 +106,8 @@ class _AddBookPageState extends State<AddBookPage> {
           style: TextStyle(color: Colors.lightBlue),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white, // Fondo blanco
-        foregroundColor: Colors.lightBlue, // Letras en lightBlue
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.lightBlue,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -201,6 +199,13 @@ class _AddBookPageState extends State<AddBookPage> {
                     child: ElevatedButton(
                       onPressed: () => _pickImage(ImageSource.gallery),
                       child: const Text('Seleccionar Imagen'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _pickImage(ImageSource.camera),
+                      child: const Text('Tomar Foto'),
                     ),
                   ),
                 ],

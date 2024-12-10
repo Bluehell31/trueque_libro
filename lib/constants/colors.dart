@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color primaryColor =
-      Color.fromARGB(255, 3, 169, 244); // Azul Teal
+  static const Color primaryColor = Color(0xFF00A9F4);
   static const Color secondaryColor =
       Color.fromARGB(255, 0, 0, 0); // Amarillo Suave
   static const Color backgroundColor = Color(0xFFFAFAFA); // Blanco Hueso

@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
-import 'confirmation_screen.dart';
 
-class ExchangePage extends StatelessWidget {
+class ExchangePage extends StatefulWidget {
+  final int bookId;
   final String bookTitle;
+  final String bookPhotoUrl; // URL de la foto del libro
+  final String bookDescription; // Descripción del libro
+
+  const ExchangePage({
+    super.key,
+    required this.bookId,
+    required this.bookTitle,
+    required this.bookPhotoUrl,
+    required this.bookDescription,
+  });
+
+  @override
+  _ExchangePageState createState() => _ExchangePageState();
+}
+
+class _ExchangePageState extends State<ExchangePage> {
   final String userName = "Cristiano Ronaldo"; // Usuario de ejemplo
   final String userPhotoUrl = 'assets/images/Usuario2.png'; // Foto de ejemplo
-  final String bookDescription =
-      "Obra de referencia en anatomía humana, ideal para estudiantes de medicina y profesionales de la salud."; // Descripción de ejemplo
   final double ownerRating = 4.8; // Calificación de ejemplo
-
-  const ExchangePage({super.key, required this.bookTitle});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +30,9 @@ class ExchangePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Detalles del Intercambio',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: AppColors.primaryColor),
         ),
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -29,7 +41,7 @@ class ExchangePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 16),
-            // Descripción del libro
+            // Descripción del libro con foto, título y descripción
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -52,8 +64,14 @@ class ExchangePage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
+                  Image.network(
+                    widget.bookPhotoUrl,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                  const SizedBox(height: 8),
                   Text(
-                    bookTitle,
+                    widget.bookTitle,
                     style: const TextStyle(
                       fontSize: 16,
                       color: AppColors.textColor,
@@ -62,7 +80,7 @@ class ExchangePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    bookDescription,
+                    widget.bookDescription,
                     style: const TextStyle(fontSize: 14, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
@@ -70,7 +88,7 @@ class ExchangePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            // Sección de información del propietario
+            // Información del propietario del libro
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -160,37 +178,26 @@ class ExchangePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            // Botón de proceder con el intercambio
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 15,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+            // Íconos de visto verde y equis roja
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.check_circle, color: Colors.green),
+                  iconSize: 60,
+                  onPressed: () {
+                    // Acción para aceptar el intercambio
+                  },
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ConfirmationScreen(
-                        ownerName: userName,
-                        ownerEmail: 'cr7@gmail.com', // Correo de ejemplo
-                        telegramUsername:
-                            'cristiano_ronaldo', // Usuario de Telegram de ejemplo
-                      ),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'Proceder con el Intercambio',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                const SizedBox(width: 30),
+                IconButton(
+                  icon: const Icon(Icons.cancel, color: Colors.red),
+                  iconSize: 60,
+                  onPressed: () {
+                    // Acción para rechazar el intercambio
+                  },
                 ),
-              ),
+              ],
             ),
           ],
         ),

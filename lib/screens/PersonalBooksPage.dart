@@ -154,103 +154,110 @@ class _PersonalBooksPageState extends State<PersonalBooksPage> {
       backgroundColor: Colors.white,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : userBooks.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No has añadido ningún libro.',
-                    style: TextStyle(color: Colors.lightBlue),
-                  ),
-                )
-              : GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 0.7,
-                  ),
-                  itemCount: userBooks.length,
-                  itemBuilder: (context, index) {
-                    final book = userBooks[index];
-                    final imageUrl =
-                        book['photo_url'] ?? 'https://via.placeholder.com/150';
+          : RefreshIndicator(
+              onRefresh: _fetchUserBooks,
+              child: userBooks.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No has añadido ningún libro.',
+                        style: TextStyle(color: Colors.lightBlue),
+                      ),
+                    )
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(10),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: userBooks.length,
+                      itemBuilder: (context, index) {
+                        final book = userBooks[index];
+                        final imageUrl = book['photo_url'] ??
+                            'https://via.placeholder.com/150';
 
-                    final isSelected = selectedBooks.contains(book['id'] ?? 0);
+                        final isSelected =
+                            selectedBooks.contains(book['id'] ?? 0);
 
-                    return GestureDetector(
-                      onTap: isSelecting
-                          ? () {
-                              setState(() {
-                                final bookId = book['id'] as int;
-                                if (isSelected) {
-                                  selectedBooks.remove(bookId);
-                                } else {
-                                  selectedBooks.add(bookId);
-                                }
-                              });
-                            }
-                          : () => _editBook(book),
-                      child: Stack(
-                        children: [
-                          Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            elevation: 3,
-                            color: isSelected
-                                ? Colors.lightBlue[50]
-                                : Colors.white,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(10)),
-                                    child: Image.network(
-                                      imageUrl,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    book['title'] ?? 'Título no disponible',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (isSelecting)
-                            Positioned(
-                              top: 5,
-                              right: 5,
-                              child: Checkbox(
-                                value: isSelected,
-                                onChanged: (value) {
+                        return GestureDetector(
+                          onTap: isSelecting
+                              ? () {
                                   setState(() {
                                     final bookId = book['id'] as int;
-                                    if (value == true) {
-                                      selectedBooks.add(bookId);
-                                    } else {
+                                    if (isSelected) {
                                       selectedBooks.remove(bookId);
+                                    } else {
+                                      selectedBooks.add(bookId);
                                     }
                                   });
-                                },
+                                }
+                              : () => _editBook(book),
+                          child: Stack(
+                            children: [
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 3,
+                                color: isSelected
+                                    ? Colors.lightBlue[50]
+                                    : Colors.white,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Expanded(
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(10)),
+                                        child: Image.network(
+                                          imageUrl,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        book['title'] ?? 'Título no disponible',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                              if (isSelecting)
+                                Positioned(
+                                  top: 5,
+                                  right: 5,
+                                  child: Checkbox(
+                                    value: isSelected,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        final bookId = book['id'] as int;
+                                        if (value == true) {
+                                          selectedBooks.add(bookId);
+                                        } else {
+                                          selectedBooks.remove(bookId);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+            ),
     );
   }
 }
