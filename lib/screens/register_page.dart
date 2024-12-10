@@ -25,8 +25,8 @@ class _RegisterPageState extends State<RegisterPage> {
   List<Map<String, dynamic>> _institutions = [];
   int? _selectedInstitutionId;
   bool _isLoading = true;
-  bool _isPasswordVisible = false; // Estado para la visibilidad de contraseña
-  bool _isConfirmPasswordVisible = false; // Visibilidad de confirmar contraseña
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   @override
   void initState() {
@@ -118,6 +118,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                 if (value == null || value.isEmpty) {
                                   return 'Por favor ingresa tu correo electrónico';
                                 }
+                                final emailRegex = RegExp(
+                                    r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                                if (!emailRegex.hasMatch(value)) {
+                                  return 'Por favor ingresa un correo electrónico válido';
+                                }
                                 return null;
                               },
                             ),
@@ -200,6 +205,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Por favor ingresa tu número de teléfono';
+                                }
+                                if (value.length != 10 ||
+                                    !RegExp(r'^[0-9]+$').hasMatch(value)) {
+                                  return 'El número de teléfono debe tener 10 dígitos';
                                 }
                                 return null;
                               },

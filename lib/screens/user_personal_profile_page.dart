@@ -115,19 +115,40 @@ class _UserPersonalProfilePageState extends State<UserPersonalProfilePage> {
   }
 
   Widget _buildProfileHeader() {
-    final photoUrl = userProfile?['photo_url'] ??
-        'https://ruta_de_imagen_default.com/default.png';
+    final photoUrl =
+        userProfile?['photo_url'] ?? 'assets/images/placeholder.png';
 
     return Center(
       child: GestureDetector(
         onTap: _updatePhoto,
         child: Stack(
+          alignment: Alignment.center,
           children: [
-            CircleAvatar(
-              radius: 60,
-              backgroundImage: NetworkImage(photoUrl),
+            // Contenedor negro para el margen externo
+            Container(
+              width: 130,
+              height: 130,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.black, width: 3),
+              ),
+              // Contenedor blanco interno
+              child: Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 4),
+                ),
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundColor:
+                      Colors.white, // O Colors.transparent si lo prefieres
+                  backgroundImage: NetworkImage(photoUrl),
+                ),
+              ),
             ),
-            const Positioned(
+            Positioned(
               bottom: 0,
               right: 0,
               child: CircleAvatar(
